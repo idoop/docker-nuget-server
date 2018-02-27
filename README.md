@@ -8,7 +8,7 @@
 
 
 
-Auto build docker [image](https://hub.docker.com/r/idoop/simple-nuget-server/) for [simple-nuget-server](https://github.com/Daniel15/simple-nuget-server)
+Auto build docker [image](https://hub.docker.com/r/idoop/docker-nuget-server/) for [simple-nuget-server](https://github.com/Daniel15/simple-nuget-server)
 
 ## Quick start
 

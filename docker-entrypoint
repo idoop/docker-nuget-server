@@ -1,5 +1,10 @@
 #!/bin/bash
 set -e
+NGINX_FILES=`ls /etc/nginx/`
+if [ -z "${NGINX_FILES}" ];then
+  chown nginx -R /etc/nginx
+  cd /etc && tar -xf /tmp/nginx.tar
+fi
 
 if [ "${1:0:1}" == "-" ];then
   echo "Usage: docker run -d -p 80:80 --name nuget-server idoop/simple-nuget-server"

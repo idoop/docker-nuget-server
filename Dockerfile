@@ -23,6 +23,8 @@ RUN sed -i -e "s/post_max_size.*/post_max_size = $DEFAULT_SIZE/" /etc/php/7.0/fp
     sed -i -e "s/upload_max_filesize.*/upload_max_filesize = $DEFAULT_SIZE/" /etc/php/7.0/fpm/php.ini && \
     sed -i -e "/server_name.*$/a\    client_max_body_size $DEFAULT_SIZE;" /etc/nginx/conf.d/nuget.conf
 
+RUN cd /etc/ && tar -cf /tmp/nginx.tar nginx
+
 RUN usermod -G www-data nginx
 
 VOLUME ["$APP_BASE/db", "$APP_BASE/packagefiles"]

@@ -33,3 +33,4 @@ docker run -d --name nuget-server -p 80:80 idoop/docker-nuget-server
 ## Volumes
 * `/var/www/simple-nuget-server/db` Path with SQLite database.
 * `/var/www/simple-nuget-server/packagefiles` Path with nuget packages save.
+* `/etc/nginx` Path with nginx config. If you want use https, please mount this path, generate cert/key and modify `<mount path>/conf.d/nuget.conf` to support https,then restart container.

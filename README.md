@@ -13,7 +13,7 @@ Auto build docker [image](https://hub.docker.com/r/idoop/simple-nuget-server/) f
 ## Quick start
 
 ``` shell
-docker run -d --name nuget-server -p 80:80 idoop/simple-nuget-server
+docker run -d --name nuget-server -p 80:80 idoop/docker-nuget-server
 ```
 
 **Note:** make sure your Host feed available on either port `80`.

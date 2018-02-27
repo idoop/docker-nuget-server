@@ -30,3 +30,6 @@ docker run -d --name nuget-server -p 80:80 idoop/simple-nuget-server
 
   **Note:** If use `host` network mode,you can set `SERVER_PORT` value  to change nuget server port. `Port range: 80-60000`
 
+## Volumes
+* `/var/www/simple-nuget-server/db` Path with SQLite database.
+* `/var/www/simple-nuget-server/packagefiles` Path with nuget packages save.

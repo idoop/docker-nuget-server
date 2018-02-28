@@ -43,7 +43,11 @@ elif [ "$#" == "0" ];then
     echo "Using default port: 80"
   else
     echo "Using specified port: ${SERVER_PORT}"
-    sed -i -e "/server_name.*/a\    listen ${SERVER_PORT};" /etc/nginx/conf.d/nuget.conf
+    if [ -z "$(cat  /etc/nginx/conf.d/nuget.conf | grep listen)" ];then
+      sed -i -e "/server_name.*/a\    listen ${SERVER_PORT};" /etc/nginx/conf.d/nuget.conf
+    else
+      sed -i -e "s/listen .*$/listen ${SERVER_PORT};/g" /etc/nginx/conf.d/nuget.conf
+    fi
   fi
 
   # Set folder property.

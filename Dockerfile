@@ -26,8 +26,8 @@ RUN sed -i -e "s/post_max_size.*/post_max_size = $DEFAULT_SIZE/" /etc/php/7.0/fp
     sed -i -e "/server_name.*$/a\    client_max_body_size $DEFAULT_SIZE;" /etc/nginx/conf.d/nuget.conf && \
     sed -i -e "s/worker_processes.*$/worker_processes  $DEFAULT_WORKER_PROCESSES;/" /etc/nginx/nginx.conf && \
     sed -i -e "s/worker_connections.*$/    worker_connections  $DEFAULT_WORKER_CONNECTIONS ;/" /etc/nginx/nginx.conf && \
-    sed -i -e "/worker_connections.*$/a\    use epoll;" /etc/nginx/nginx.conf
-
+    sed -i -e "/worker_connections.*$/a\    use epoll;" /etc/nginx/nginx.conf && \
+    sed -i -e "s/keepalive_timeout.*$/    keepalive_timeout  5;/" /etc/nginx/nginx.conf
 RUN cd /etc/ && tar -cf /tmp/nginx.tar nginx
 
 RUN usermod -G www-data nginx

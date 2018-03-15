@@ -39,19 +39,34 @@ elif [ "$#" == "0" ];then
   fi
 
   # Set server port.
-  if [ -z "${SERVER_PORT}" ];then
+  if [ -z ${SERVER_PORT} ];then
     echo "Using default port: 80"
   else
     echo "Using specified port: ${SERVER_PORT}"
-    sed -i -e "/server_name.*/a\    listen ${SERVER_PORT};" /etc/nginx/conf.d/nuget.conf
+    sed -i -e "s/listen 80/listen ${SERVER_PORT}/" /etc/nginx/conf.d/nuget.conf
   fi
-
+  
+  # Set Worker_Processes
+  if [ -z ${WORKER_PROCESSES} ];then
+    echo "Using default nginx worker_processes: ${DEFAULT_WORKER_PROCESSES}"
+  else
+    echo "Using specified nginx worker_processes ${WORKER_PROCESSES}"
+    sed -i -e "s/worker_processes.*$/worker_processes  ${WORKER_PROCESSES};/" /etc/nginx/nginx.conf
+  fi
+  
+  # Set Worker_Connections
+  if [ -z ${WORKER_CONNECTIONS} ];then
+    echo "Using default worker_connections: ${DEFAULT_WORKER_CONNECTIONS}"
+  else
+    echo "Using specified worker_connections: ${WORKER_CONNECTIONS}"
+    sed -i -e "s/worker_connections.*$/    worker_connections  ${WORKER_CONNECTIONS};/" /etc/nginx/nginx.conf
+  fi
+  
   # Set folder property.
-  chown www-data $APP_BASE/db $APP_BASE/packagefiles
+  #chown www-data $APP_BASE/db $APP_BASE/packagefiles
 
   # Start
   echo 'Starting Services.'
-  /etc/init.d/php7.0-fpm start
   /etc/init.d/php7.0-fpm restart
   /etc/init.d/nginx restart
 

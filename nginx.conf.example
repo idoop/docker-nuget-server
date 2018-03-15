@@ -2,8 +2,15 @@
 
 server {
     server_name localhost;
+    listen 80  default backlog=1024;
     root /var/www/simple-nuget-server/public/;
-
+    client_body_buffer_size 5M;
+    client_header_buffer_size 4k;
+    open_file_cache max=65535 inactive=60s;
+    open_file_cache_valid 60s;
+    open_file_cache_min_uses 1;
+    open_file_cache_errors on;
+    
     rewrite ^/$ /index.php;
     rewrite ^/\$metadata$ /metadata.xml;
     rewrite ^/Search\(\)/\$count$ /count.php;
@@ -26,6 +33,10 @@ server {
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
         fastcgi_index index.php;
+        fastcgi_buffers 4 1024k;
+        fastcgi_buffer_size 1024k;
+        fastcgi_busy_buffers_size 1024k;
+        fastcgi_temp_file_write_size 5M;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
 
@@ -38,6 +49,10 @@ server {
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
         fastcgi_index index.php;
+        fastcgi_buffers 4 1024k;
+        fastcgi_buffer_size 1024k;
+        fastcgi_busy_buffers_size 1024k;
+        fastcgi_temp_file_write_size 5M;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
 

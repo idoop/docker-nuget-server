@@ -24,6 +24,10 @@ docker run -d --name nuget-server -p 80:80 idoop/docker-nuget-server
 
 * `UPLOAD_MAX_FILESIZE`: set the maximum size of an uploaded nuget package file. Default size: `20M`
 
+* `WORKER_PROCESSES`: set nginx worker processes.Default: `1`
+
+* `WORKER_CONNECTIONS`: set nginx worker connections. Default: `65535`
+
 * `SERVER_NAME`: set nuget server domain name. Default name: `localhost`
 
 * `SERVER_PORT`: set nuget server port. Default port: `80`.

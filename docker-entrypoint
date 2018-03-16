@@ -67,8 +67,8 @@ elif [ "$#" == "0" ];then
 
   # Start
   echo 'Starting Services.'
-  /etc/init.d/php7.0-fpm restart
-  /etc/init.d/nginx restart
+  /etc/init.d/php7.0-fpm start
+  /etc/init.d/nginx start
 
   tail -f /dev/null
 

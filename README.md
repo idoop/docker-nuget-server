@@ -14,7 +14,7 @@ Auto build docker [image](https://hub.docker.com/r/idoop/docker-nuget-server/) f
 
 ### docker command
 ``` shell
-docker run -d --name nuget-server -p 80:80 -e NUGET_API_KEY=bF82eD5c1 idoop/docker-nuget-server
+docker run -d --name nuget-server -p 80:80 -e NUGET_API_KEY="112233" idoop/docker-nuget-server
 ```
 
 ### docker-compose
@@ -28,21 +28,26 @@ services:
     network_mode: "host"
     restart: always
     environment:
-      NUGET_API_KEY: "bF82eD5c1"
+      NUGET_API_KEY: "112233"
       UPLOAD_MAX_FILESIZE: "40M"
-#      SERVER_PORT: "8080"
-#      SERVER_NAME: "nuget.example.com:8080"  # also you can use ip:port. eg: 192.168.0.22:8080
-      WORKER_PROCESSES: "4"
-      WORKER_CONNECTIONS: "65535"
+      
+      ## When use host network mode, 
+      ## set SERVER_PORT value if you want change server expose port.
+      # SERVER_PORT: "8080"
+      
+      ## Set nuget server domain[:port], also you can use machine(not container) ip[:port]. 
+      ## eg: "192.168.11.22:8080" or "nuet.eg.com:8080"
+      SERVER_NAME: "nuget.example.com"
+      WORKER_PROCESSES: "2"
     volumes:
       - nuget-db:/var/www/simple-nuget-server/db
       - nuget-packagefiles:/var/www/simple-nuget-server/packagefiles
       - nuget-nginx:/etc/nginx
     ulimits:
-      nproc: 65535
+      nproc: 8096
       nofile:
-        soft: 20000
-        hard: 40000
+        soft: 65535
+        hard: 65535
 volumes:
   nuget-db:
   nuget-packagefiles:
@@ -53,17 +58,17 @@ volumes:
 
 ## Environment configuration
 
-* `NUGET_API_KEY`: set nuget api key. Default key: `112233`
+* `NUGET_API_KEY`:  nuget api key. Default key: `112233`
 
-* `UPLOAD_MAX_FILESIZE`: set the maximum size of an uploaded nuget package file. Default size: `20M`
+* `UPLOAD_MAX_FILESIZE`:  the maximum size of an uploaded nuget package file. Default size: `20M`
 
-* `WORKER_PROCESSES`: set nginx worker processes.Default: `1`
+* `WORKER_PROCESSES`:  nginx worker processes.Default: `1`
 
-* `WORKER_CONNECTIONS`: set nginx worker connections. Default: `65535`
+* `WORKER_CONNECTIONS`:  nginx worker connections. Default: `65535`
 
-* `SERVER_NAME`: set server domain name,must set value with your server name or ip. Default: `localhost`
+* `SERVER_NAME`:  name of server domain,set value with domain name or ip.Default: `localhost` (Require). 
 
-* `SERVER_PORT`: set server port. Default port: `80`.
+* `SERVER_PORT`:  server port. Default port: `80`.
 
   **Note:** If use `host` network mode,you can set `SERVER_PORT` value  to change nuget server port.
 
@@ -77,12 +82,16 @@ volumes:
 
 Download [nuget commandline tool](https://www.nuget.org/downloads).
 
-### Push nuget package:
+#### Push nuget package:
 ``` shell
 nuget push xxx.nupkg -source SERVER_NAME -apikey NUGET_API_KEY
 ```
 
-### Download nuget package:
+#### Download nuget package:
 ``` shell
 nuget install xxx -source SERVER_NAME -packagesavemode nupkg
 ```
+
+## Bug:
+
+If not set `SERVER_NAME` value ,client will resolve the default server name `localhost` at client machine.

@@ -26,14 +26,17 @@ COPY nginx.conf.example /etc/nginx/conf.d/nuget.conf
 COPY docker-entrypoint /bin/docker-entrypoint
 
 # Set default upload file sizes limit
-RUN sed -i -e "s/post_max_size.*/post_max_size = $DEFAULT_SIZE/" /etc/php/7.0/fpm/php.ini && \
-    sed -i -e "s/upload_max_filesize.*/upload_max_filesize = $DEFAULT_SIZE/" /etc/php/7.0/fpm/php.ini && \
-    sed -i -e "s/;pm.max_requests.*$/pm.max_requests = 10240/" /etc/php/7.0/fpm/pool.d/www.conf && \
+RUN export PHP_VERSION=$(ls /etc/php/) && \
+    sed -i -e "s/post_max_size.*/post_max_size = $DEFAULT_SIZE/" /etc/php/$PHP_VERSION/fpm/php.ini && \
+    sed -i -e "s/upload_max_filesize.*/upload_max_filesize = $DEFAULT_SIZE/" /etc/php/$PHP_VERSION/fpm/php.ini && \
+    sed -i -e "s/;pm.max_requests.*$/pm.max_requests = 10240/" /etc/php/$PHP_VERSION/fpm/pool.d/www.conf && \
     sed -i -e "/server_name.*$/a\    client_max_body_size $DEFAULT_SIZE;" /etc/nginx/conf.d/nuget.conf && \
+    sed -i -e "s/__PHP_VERSION__/$PHP_VERSION/g" /etc/nginx/conf.d/nuget.conf && \
     sed -i -e "s/worker_processes.*$/worker_processes  $DEFAULT_WORKER_PROCESSES;/" /etc/nginx/nginx.conf && \
     sed -i -e "s/worker_connections.*$/    worker_connections  $DEFAULT_WORKER_CONNECTIONS ;/" /etc/nginx/nginx.conf && \
     sed -i -e "/worker_connections.*$/a\    use epoll;" /etc/nginx/nginx.conf && \
     sed -i -e "s/keepalive_timeout.*$/    keepalive_timeout  5;/" /etc/nginx/nginx.conf && \
+    sed -i -e "s/__PHP_VERSION__/$PHP_VERSION/g" /bin/docker-entrypoint && \
     cd /etc/ && tar -cf /tmp/nginx.tar nginx && \
     usermod -G www-data nginx && \
     chmod +x /bin/docker-entrypoint

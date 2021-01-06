@@ -25,8 +25,8 @@ elif [ "$#" == "0" ];then
     echo "Using default  max upload file size is ${DEFAULT_SIZE}."
   else
     echo "Using specified max upload file size is ${UPLOAD_MAX_FILESIZE}."
-    sed -i -e "s/post_max_size.*$/post_max_size = ${UPLOAD_MAX_FILESIZE}/" /etc/php/7.0/fpm/php.ini
-    sed -i -e "s/upload_max_filesize.*$/upload_max_filesize = ${UPLOAD_MAX_FILESIZE}/" /etc/php/7.0/fpm/php.ini
+    sed -i -e "s/post_max_size.*$/post_max_size = ${UPLOAD_MAX_FILESIZE}/" /etc/php/__PHP_VERSION__/fpm/php.ini
+    sed -i -e "s/upload_max_filesize.*$/upload_max_filesize = ${UPLOAD_MAX_FILESIZE}/" /etc/php/__PHP_VERSION__/fpm/php.ini
     sed -i -e "s/client_max_body_size.*$/client_max_body_size ${UPLOAD_MAX_FILESIZE};/g" /etc/nginx/conf.d/nuget.conf
   fi
 
@@ -67,7 +67,7 @@ elif [ "$#" == "0" ];then
 
   # Start
   echo 'Starting Services.'
-  /etc/init.d/php7.0-fpm start
+  /etc/init.d/php__PHP_VERSION__-fpm start
   /etc/init.d/nginx start
 
   tail -f /dev/null

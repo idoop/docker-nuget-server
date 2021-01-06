@@ -31,7 +31,7 @@ server {
 
         try_files $uri =404;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php__PHP_VERSION__-fpm.sock;
         fastcgi_index index.php;
         fastcgi_buffers 4 1024k;
         fastcgi_buffer_size 1024k;
@@ -47,7 +47,7 @@ server {
 
         try_files $uri =404;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php__PHP_VERSION__-fpm.sock;
         fastcgi_index index.php;
         fastcgi_buffers 4 1024k;
         fastcgi_buffer_size 1024k;

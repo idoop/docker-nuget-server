@@ -62,6 +62,11 @@ elif [ "$#" == "0" ];then
     sed -i -e "s/worker_connections.*$/    worker_connections  ${WORKER_CONNECTIONS};/" /etc/nginx/nginx.conf
   fi
   
+  if [ -n "${BASE_URL}" ];then
+    echo "Use base URL: ${BASE_URL}"
+    sed -i -e "/fastcgi_temp_file_write_size.*$/a\        fastcgi_param BASE_URL ${BASE_URL};" /etc/nginx/conf.d/nuget.conf
+  fi
+
   # Set folder property.
   #chown www-data $APP_BASE/db $APP_BASE/packagefiles
 

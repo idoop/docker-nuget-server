@@ -1,24 +1,30 @@
-FROM nginx
-MAINTAINER Swire Chen <idoop@msn.cn>
+FROM alpine/git AS downloader
 
-ARG REPOSITORY=https://github.com/Daniel15/simple-nuget-server
+ARG GIT_BRANCH=master
+ARG GIT_URL=https://github.com/Daniel15/simple-nuget-server
+
+# Download project
+RUN git clone --branch $GIT_BRANCH --depth 1 $GIT_URL /project && \
+    rm -rf /project/.git
+
+FROM nginx
+MAINTAINER Swire Chen <idoop@msn.cn>"
 
 ENV APP_BASE /var/www/simple-nuget-server
 ENV DEFAULT_SIZE 20M
 ENV DEFAULT_WORKER_PROCESSES 1
 ENV DEFAULT_WORKER_CONNECTIONS 65535
 
-# Install PHP7 && Download project
+COPY --from=downloader /project $APP_BASE
+
+# Install PHP7
 RUN apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests \
-    ca-certificates curl unzip php php-fpm \
-    php-sqlite3 php-zip php-xml && \
+    php php-fpm php-sqlite3 php-xml php-zip && \
     rm -rf /var/lib/apt/lists/* && \
-    curl -sSL $REPOSITORY/archive/master.zip -o master.zip && \
-    unzip master.zip -d /var/www && mv /var/www/simple-nuget-server-master $APP_BASE && \
     chown www-data:www-data $APP_BASE/db $APP_BASE/packagefiles && \
     chmod 0770 $APP_BASE/db $APP_BASE/packagefiles && \
-    rm -rf master.zip && rm /etc/nginx/conf.d/*
+    rm /etc/nginx/conf.d/*
 
 # Activate the nginx configuration
 COPY nginx.conf.example /etc/nginx/conf.d/nuget.conf

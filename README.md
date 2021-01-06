@@ -72,6 +72,8 @@ volumes:
 
   **Note:** If use `host` network mode,you can set `SERVER_PORT` value  to change nuget server port.
 
+* `BASE_URL`:  set a fixed base URL, instead of generating it from `SERVER_NAME` and `SERVER_PORT`. Use this when the container is not facing the outside world, e.g. when there is another reverse proxy.
+
 ## Volumes
 * `/var/www/simple-nuget-server/db` Path with SQLite database.
 * `/var/www/simple-nuget-server/packagefiles` Path with nuget packages save.

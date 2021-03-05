@@ -43,7 +43,7 @@ elif [ "$#" == "0" ];then
     echo "Using default port: 80"
   else
     echo "Using specified port: ${SERVER_PORT}"
-    sed -i -e "s/listen 80/listen ${SERVER_PORT}/" /etc/nginx/conf.d/nuget.conf
+    sed -i -e "s/listen.*/listen ${SERVER_PORT};/" /etc/nginx/conf.d/nuget.conf
   fi
   
   # Set Worker_Processes

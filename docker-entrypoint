@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
+NGINX_CONF_DEFAULT="/etc/nginx/nginx.conf"
+NGINX_CONF_NUGET="/etc/nginx/conf.d/nuget.conf"
 NGINX_FILES=`ls /etc/nginx/`
 if [ -z "${NGINX_FILES}" ];then
   chown nginx -R /etc/nginx
@@ -35,7 +37,7 @@ elif [ "$#" == "0" ];then
     echo "Using default server name: localhost"
   else
     echo "Using specified server name: ${SERVER_NAME}"
-    sed -i -e "s/server_name.*/server_name ${SERVER_NAME};/" /etc/nginx/conf.d/nuget.conf
+    sed -e "s/server_name.*/server_name ${SERVER_NAME};/" -i ${NGINX_CONF_NUGET}
   fi
 
   # Set server port.
@@ -43,7 +45,7 @@ elif [ "$#" == "0" ];then
     echo "Using default port: 80"
   else
     echo "Using specified port: ${SERVER_PORT}"
-    sed -i -e "s/listen.*/listen ${SERVER_PORT};/" /etc/nginx/conf.d/nuget.conf
+    sed -e "s/listen.*/listen ${SERVER_PORT};/" -i ${NGINX_CONF_NUGET}
   fi
   
   # Set Worker_Processes
@@ -51,7 +53,7 @@ elif [ "$#" == "0" ];then
     echo "Using default nginx worker_processes: ${DEFAULT_WORKER_PROCESSES}"
   else
     echo "Using specified nginx worker_processes ${WORKER_PROCESSES}"
-    sed -i -e "s/worker_processes.*$/worker_processes  ${WORKER_PROCESSES};/" /etc/nginx/nginx.conf
+    sed -e "s/worker_processes.*$/worker_processes  ${WORKER_PROCESSES};/" -i ${NGINX_CONF_DEFAULT}
   fi
   
   # Set Worker_Connections
@@ -59,12 +61,13 @@ elif [ "$#" == "0" ];then
     echo "Using default worker_connections: ${DEFAULT_WORKER_CONNECTIONS}"
   else
     echo "Using specified worker_connections: ${WORKER_CONNECTIONS}"
-    sed -i -e "s/worker_connections.*$/    worker_connections  ${WORKER_CONNECTIONS};/" /etc/nginx/nginx.conf
+    sed -e "s/worker_connections.*$/    worker_connections  ${WORKER_CONNECTIONS};/" -i ${NGINX_CONF_DEFAULT}
   fi
   
   if [ -n "${BASE_URL}" ];then
     echo "Use base URL: ${BASE_URL}"
-    sed -i -e "/fastcgi_temp_file_write_size.*$/a\        fastcgi_param BASE_URL ${BASE_URL};" /etc/nginx/conf.d/nuget.conf
+	sed -e "/fastcgi_param BASE_URL.*$/d" \
+        -e "/fastcgi_temp_file_write_size.*$/a\        fastcgi_param BASE_URL ${BASE_URL};" -i ${NGINX_CONF_NUGET}
   fi
 
   # Set folder property.

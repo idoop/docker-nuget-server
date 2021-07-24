@@ -8,7 +8,7 @@ RUN git clone --branch $GIT_BRANCH --depth 1 $GIT_URL /project && \
     rm -rf /project/.git
 
 FROM nginx
-MAINTAINER Swire Chen <idoop@msn.cn>"
+LABEL maintainer="Swire Chen <idoop@msn.cn>"
 
 ENV APP_BASE /var/www/simple-nuget-server
 ENV DEFAULT_SIZE 20M
